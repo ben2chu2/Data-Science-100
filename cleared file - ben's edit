@@ -1,0 +1,66 @@
+
+/**
+  *
+  * @param {object} params
+  * @param {string} params.iam_apikey
+  * @param {string} params.url
+  * @param {string} params.username
+  * @param {string} params.password
+  * @param {string} params.environment_id
+  * @param {string} params.collection_id
+  * @param {string} params.configuration_id
+  * @param {string} params.input
+  *
+  * @return {object}
+  *
+  */
+
+const assert = require('assert');
+const DiscoveryV1 = require('watson-developer-cloud/discovery/v1');
+
+/**
+  *
+  * main() will be run when you invoke this action
+  *
+  * @param Cloud Functions actions accept a single parameter, which must be a JSON object.
+  *
+  * @return The output of this action, which must be a JSON object.
+  *
+  */
+function main(params) {
+  return new Promise(function (resolve, reject) {
+
+    let discovery;
+
+    if (params.iam_apikey){
+      discovery = new DiscoveryV1({
+        'iam_apikey': 'yY9C50cbJUlRZlOd8mDiZUxXxWN-dwPGhmueoEJ9iZug',
+        'url': 'https://api.us-south.discovery.watson.cloud.ibm.com/instances/649c739b-7677-4421-a8c3-9ed91aa33bdb',
+        'version': '2019-04-30'
+      });
+    }
+    else {
+      discovery = new DiscoveryV1({
+        'username': params.username,
+        'password': params.password,
+        'url': 'https://api.us-south.discovery.watson.cloud.ibm.com/instances/649c739b-7677-4421-a8c3-9ed91aa33bdb',
+        'version': '2020-04-30'
+      });
+    }
+
+    discovery.query({
+      'environment_id': '08d070ae-df63-4df0-a069-58486a702386',
+      'collection_id': '7ae0d55d-e2c7-45f2-8f19-d80121a0304d',
+      'natural_language_query': params.input,
+      'passages': true,
+      'count': 3,
+      'passages_count': 3
+    }, function(err, data) {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(data);
+    });
+  });
+}
+
